@@ -23,6 +23,7 @@ export default defineConfig({
         popup: resolve(__dirname, "src/popup/index.html"),
         options: resolve(__dirname, "src/options/index.html"),
         content: resolve(__dirname, "src/content/contextMenuHelper.ts"),
+        modClick: resolve(__dirname, "src/content/modClick.ts"),
       },
       output: {
         entryFileNames: (chunk) =>

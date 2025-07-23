@@ -209,6 +209,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         );
         sendResponse(true);
         break;
+      case "OPEN_INCOGNITO": {
+        const settings = await getSettings(); // if you have that helper
+        await openUrlInIncognito(msg.url, settings.removeFromHistoryOnTransfer);
+        sendResponse(true);
+        break;
+      }
       default:
         break;
     }

@@ -14,16 +14,16 @@
   },
   "permissions": [
     "tabs",
+    "windows",
     "storage",
-    "scripting",
-    "contextMenus",
     "history",
+    "contextMenus",
     "alarms"
   ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/contextMenuHelper.ts"],
+      "js": ["src/content/modClick.ts"],
       "run_at": "document_start"
     }
   ],
