@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "ChromCognito",
+  "version": "0.1.0",
+  "description": "Open, route, and manage tabs in Incognito with rules, shortcuts, and auto-cleanups.",
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_title": "Open this tab in Incognito"
+  },
+  "options_page": "src/options/index.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "scripting",
+    "contextMenus",
+    "history",
+    "alarms"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/contextMenuHelper.ts"],
+      "run_at": "document_start"
+    }
+  ],
+  "host_permissions": ["<all_urls>"],
+  "commands": {
+    "open-current-in-incognito": {
+      "suggested_key": { "default": "Alt+Shift+I" },
+      "description": "Open current tab in Incognito"
+    },
+    "open-matching-tabs-in-incognito": {
+      "suggested_key": { "default": "Alt+Shift+M" },
+      "description": "Open all matching-rule tabs in Incognito"
+    }
+  },
+  "incognito": "split"
+}
