@@ -3,8 +3,8 @@
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.6;
   font-weight: 400;
-  color: #2d3748;
-  background-color: #f7fafc;
+  color: #e2e8f0;
+  background-color: #1a202c;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,86 +15,47 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f7fafc;
+  background-color: #1a202c;
+  overflow: hidden;
 }
 
-a {
-  color: #00d1b2;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-a:hover {
-  color: #00b89c;
-  text-decoration: underline;
-}
-
-h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #1a202c;
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #2d3748;
-  margin-bottom: 0.75rem;
-}
-
-button {
-  background-color: #00d1b2;
+/* Button Styling and Ripple Effect */
+.btn {
+  background-color: #1e90ff;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-button:hover {
-  background-color: #00b89c;
-  transform: translateY(-1px);
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 144, 255, 0.6);
 }
 
-button:focus,
-button:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 209, 178, 0.3);
+.btn::after {
+  content: "";
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: width 0.6s ease, height 0.6s ease;
 }
 
-input[type="text"],
-input[type="number"] {
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  color: #2d3748;
-  background-color: #fff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-  border-color: #00d1b2;
-  box-shadow: 0 0 0 3px rgba(0, 209, 178, 0.1);
-  outline: none;
-}
-
-input[type="checkbox"] {
-  accent-color: #00d1b2;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 3px;
-}
-
-label {
-  font-size: 0.875rem;
-  color: #4a5568;
+.btn:active::after {
+  width: 300px;
+  height: 300px;
+  opacity: 0;
 }
 
 /* Options Page Specific */
@@ -102,9 +63,9 @@ div.p-6 {
   padding: 1.5rem;
   max-width: 600px;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: #2d3748;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 section {
@@ -139,9 +100,11 @@ button.text-red-600:hover {
 div.p-4.w-80 {
   padding: 1rem;
   width: 320px;
-  background-color: #fff;
+  background-color: #2d3748;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 div.p-4.w-80 button {
@@ -159,7 +122,7 @@ ul.space-y-1.max-h-32 {
 
 ul.space-y-1.max-h-32 li {
   font-size: 0.875rem;
-  color: #2d3748;
+  color: #e2e8f0;
 }
 
 a.text-xs.block.text-right {
@@ -175,12 +138,12 @@ ul::-webkit-scrollbar {
 }
 
 ul::-webkit-scrollbar-track {
-  background: #f7fafc;
+  background: #2d3748;
   border-radius: 3px;
 }
 
 ul::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: #718096;
   border-radius: 3px;
 }
 
@@ -188,65 +151,19 @@ ul::-webkit-scrollbar-thumb:hover {
   background: #a0aec0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: #1a202c;
-    color: #e2e8f0;
-  }
+/* Ripple Effect Animation */
+.ripple {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
 
-  body {
-    background-color: #1a202c;
-  }
-
-  div.p-6,
-  div.p-4.w-80 {
-    background-color: #2d3748;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  }
-
-  h1,
-  h2 {
-    color: #e2e8f0;
-  }
-
-  input[type="text"],
-  input[type="number"] {
-    background-color: #4a5568;
-    border-color: #718096;
-    color: #e2e8f0;
-  }
-
-  input[type="text"]:focus,
-  input[type="number"]:focus {
-    border-color: #00d1b2;
-    box-shadow: 0 0 0 3px rgba(0, 209, 178, 0.3);
-  }
-
-  label {
-    color: #e2e8f0;
-  }
-
-  button {
-    background-color: #00d1b2;
-  }
-
-  button:hover {
-    background-color: #00b89c;
-  }
-
-  ul.space-y-1.max-h-32 li {
-    color: #e2e8f0;
-  }
-
-  ul::-webkit-scrollbar-track {
-    background: #2d3748;
-  }
-
-  ul::-webkit-scrollbar-thumb {
-    background: #718096;
-  }
-
-  ul::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
 }
