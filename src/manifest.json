@@ -5,7 +5,12 @@
   "description": "Open, route, and manage tabs in Incognito with rules, shortcuts, and auto-cleanups.",
   "action": {
     "default_popup": "src/popup/index.html",
-    "default_title": "Open this tab in Incognito"
+    "default_title": "Open this tab in Incognito",
+    "default_icon": {
+      "16": "icons/chromcognito.png",
+      "48": "icons/chromcognito.png",
+      "128": "icons/chromcognito.png"
+    }
   },
   "options_page": "src/options/index.html",
   "background": {
@@ -27,6 +32,11 @@
       "run_at": "document_start"
     }
   ],
+  "icons": {
+    "16": "icons/chromcognito.png",
+    "48": "icons/chromcognito.png",
+    "128": "icons/chromcognito.png"
+  },
   "host_permissions": ["<all_urls>"],
   "commands": {
     "open-current-in-incognito": {
