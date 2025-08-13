@@ -307,6 +307,58 @@ const Popup: React.FC = () => {
           </div>
         </div>
 
+        {/* Keyboard Shortcuts Info */}
+        {settings && settings.keyboardShortcuts && (
+          <div className="shortcuts-info">
+            <div className="shortcuts-header">
+              <h4 className="shortcuts-title">Quick Access</h4>
+            </div>
+            <div className="shortcuts-list-popup">
+              {settings.keyboardShortcuts.openCurrentInIncognito.enabled && (
+                <div className="shortcut-item-popup">
+                  <span className="shortcut-desc">Current tab</span>
+                  <kbd className="shortcut-key-popup">
+                    {settings.keyboardShortcuts.openCurrentInIncognito.key}
+                  </kbd>
+                </div>
+              )}
+              {settings.keyboardShortcuts.openMatchingTabsInIncognito
+                .enabled && (
+                <div className="shortcut-item-popup">
+                  <span className="shortcut-desc">Matching tabs</span>
+                  <kbd className="shortcut-key-popup">
+                    {settings.keyboardShortcuts.openMatchingTabsInIncognito.key}
+                  </kbd>
+                </div>
+              )}
+              {settings.keyboardShortcuts.openAllTabsInIncognito.enabled && (
+                <div className="shortcut-item-popup">
+                  <span className="shortcut-desc">All tabs</span>
+                  <kbd className="shortcut-key-popup">
+                    {settings.keyboardShortcuts.openAllTabsInIncognito.key}
+                  </kbd>
+                </div>
+              )}
+              {settings.modifierClick && settings.modifierClick.enabled && (
+                <div className="shortcut-item-popup">
+                  <span className="shortcut-desc">Click links</span>
+                  <kbd className="shortcut-key-popup">
+                    {[
+                      settings.modifierClick.requireCmd && "⌘",
+                      settings.modifierClick.requireCtrl && "Ctrl",
+                      settings.modifierClick.requireAlt && "Alt",
+                      settings.modifierClick.requireShift && "⇧",
+                    ]
+                      .filter(Boolean)
+                      .join("+")}
+                    +Click
+                  </kbd>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Recently Closed Section */}
         <div className="recently-closed-section">
           <div className="section-header">

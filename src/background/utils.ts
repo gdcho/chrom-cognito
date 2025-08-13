@@ -6,6 +6,30 @@ export const DEFAULT_SETTINGS: Settings = {
   removeFromHistoryOnTransfer: false,
   autoCloseMinutes: null,
   domainsExcludedFromAutoClose: [],
+  keyboardShortcuts: {
+    openCurrentInIncognito: {
+      key: "Alt+Shift+I",
+      description: "Open current tab in Incognito",
+      enabled: true,
+    },
+    openMatchingTabsInIncognito: {
+      key: "Alt+Shift+M",
+      description: "Open all matching-rule tabs in Incognito",
+      enabled: true,
+    },
+    openAllTabsInIncognito: {
+      key: "Alt+Shift+A",
+      description: "Open all tabs in window in Incognito",
+      enabled: true,
+    },
+  },
+  modifierClick: {
+    enabled: true,
+    requireCmd: true,
+    requireAlt: true,
+    requireShift: false,
+    requireCtrl: false,
+  },
 };
 
 export const storage = {
@@ -15,7 +39,17 @@ export const storage = {
 
 export const getSettings = async (): Promise<Settings> => {
   const { settings } = await storage.sync.get("settings");
-  return { ...DEFAULT_SETTINGS, ...(settings || {}) };
+  const mergedSettings = { ...DEFAULT_SETTINGS, ...(settings || {}) };
+
+  // Ensure keyboard shortcuts are properly merged
+  if (settings?.keyboardShortcuts) {
+    mergedSettings.keyboardShortcuts = {
+      ...DEFAULT_SETTINGS.keyboardShortcuts,
+      ...settings.keyboardShortcuts,
+    };
+  }
+
+  return mergedSettings;
 };
 
 export const saveSettings = (s: Settings) => storage.sync.set({ settings: s });

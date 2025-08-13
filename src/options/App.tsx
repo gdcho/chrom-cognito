@@ -122,6 +122,264 @@ const Options: React.FC = () => {
       </section>
 
       <section>
+        <h2>Modifier Click Settings</h2>
+        <p className="section-description">
+          Configure modifier key combinations for clicking links to open them in
+          incognito mode. For example, Cmd+Alt+Click on macOS or Ctrl+Alt+Click
+          on Windows/Linux.
+        </p>
+
+        <div className="setting-group">
+          <label className="main-checkbox-label">
+            <input
+              type="checkbox"
+              checked={settings.modifierClick.enabled}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  modifierClick: {
+                    ...settings.modifierClick,
+                    enabled: e.target.checked,
+                  },
+                })
+              }
+            />
+            Enable modifier click to open in incognito
+          </label>
+          <p className="setting-description">
+            When enabled, clicking links with the specified modifier keys will
+            open them in incognito mode.
+          </p>
+        </div>
+
+        {settings.modifierClick.enabled && (
+          <div className="modifier-keys-group">
+            <h3
+              style={{
+                fontSize: "var(--font-size-sm)",
+                marginBottom: "var(--spacing-md)",
+                color: "var(--color-text-primary)",
+              }}
+            >
+              Required Modifier Keys
+            </h3>
+            <div className="modifier-checkboxes">
+              <label className="modifier-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={settings.modifierClick.requireCmd}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      modifierClick: {
+                        ...settings.modifierClick,
+                        requireCmd: e.target.checked,
+                      },
+                    })
+                  }
+                />
+                <span className="modifier-key-display">⌘ Cmd</span> (macOS)
+              </label>
+
+              <label className="modifier-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={settings.modifierClick.requireCtrl}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      modifierClick: {
+                        ...settings.modifierClick,
+                        requireCtrl: e.target.checked,
+                      },
+                    })
+                  }
+                />
+                <span className="modifier-key-display">Ctrl</span>{" "}
+                (Windows/Linux)
+              </label>
+
+              <label className="modifier-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={settings.modifierClick.requireAlt}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      modifierClick: {
+                        ...settings.modifierClick,
+                        requireAlt: e.target.checked,
+                      },
+                    })
+                  }
+                />
+                <span className="modifier-key-display">Alt</span>
+              </label>
+
+              <label className="modifier-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={settings.modifierClick.requireShift}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      modifierClick: {
+                        ...settings.modifierClick,
+                        requireShift: e.target.checked,
+                      },
+                    })
+                  }
+                />
+                <span className="modifier-key-display">Shift</span>
+              </label>
+            </div>
+
+            <div className="modifier-preview">
+              <p>
+                <strong>Current combination:</strong>{" "}
+                <span className="combination-display">
+                  {[
+                    settings.modifierClick.requireCmd && "⌘ Cmd",
+                    settings.modifierClick.requireCtrl && "Ctrl",
+                    settings.modifierClick.requireAlt && "Alt",
+                    settings.modifierClick.requireShift && "Shift",
+                  ]
+                    .filter(Boolean)
+                    .join(" + ")}{" "}
+                  + Click
+                </span>
+              </p>
+              <p className="setting-description">
+                💡 Tip: Choose different combinations for macOS (⌘ Cmd) and
+                Windows/Linux (Ctrl) to work across platforms.
+              </p>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2>Keyboard Shortcuts</h2>
+        <p className="section-description">
+          Configure keyboard shortcuts for quick access to incognito features.
+          Note: Actual key combinations are managed by Chrome's extension
+          settings.
+        </p>
+
+        <div className="shortcuts-list">
+          <div className="shortcut-item">
+            <div className="shortcut-info">
+              <label className="shortcut-label">
+                <input
+                  type="checkbox"
+                  checked={
+                    settings.keyboardShortcuts.openCurrentInIncognito.enabled
+                  }
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      keyboardShortcuts: {
+                        ...settings.keyboardShortcuts,
+                        openCurrentInIncognito: {
+                          ...settings.keyboardShortcuts.openCurrentInIncognito,
+                          enabled: e.target.checked,
+                        },
+                      },
+                    })
+                  }
+                />
+                Open current tab in Incognito
+              </label>
+              <span className="shortcut-key">
+                {settings.keyboardShortcuts.openCurrentInIncognito.key}
+              </span>
+            </div>
+            <p className="shortcut-description">
+              {settings.keyboardShortcuts.openCurrentInIncognito.description}
+            </p>
+          </div>
+
+          <div className="shortcut-item">
+            <div className="shortcut-info">
+              <label className="shortcut-label">
+                <input
+                  type="checkbox"
+                  checked={
+                    settings.keyboardShortcuts.openMatchingTabsInIncognito
+                      .enabled
+                  }
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      keyboardShortcuts: {
+                        ...settings.keyboardShortcuts,
+                        openMatchingTabsInIncognito: {
+                          ...settings.keyboardShortcuts
+                            .openMatchingTabsInIncognito,
+                          enabled: e.target.checked,
+                        },
+                      },
+                    })
+                  }
+                />
+                Open matching tabs in Incognito
+              </label>
+              <span className="shortcut-key">
+                {settings.keyboardShortcuts.openMatchingTabsInIncognito.key}
+              </span>
+            </div>
+            <p className="shortcut-description">
+              {
+                settings.keyboardShortcuts.openMatchingTabsInIncognito
+                  .description
+              }
+            </p>
+          </div>
+
+          <div className="shortcut-item">
+            <div className="shortcut-info">
+              <label className="shortcut-label">
+                <input
+                  type="checkbox"
+                  checked={
+                    settings.keyboardShortcuts.openAllTabsInIncognito.enabled
+                  }
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      keyboardShortcuts: {
+                        ...settings.keyboardShortcuts,
+                        openAllTabsInIncognito: {
+                          ...settings.keyboardShortcuts.openAllTabsInIncognito,
+                          enabled: e.target.checked,
+                        },
+                      },
+                    })
+                  }
+                />
+                Open all tabs in Incognito
+              </label>
+              <span className="shortcut-key">
+                {settings.keyboardShortcuts.openAllTabsInIncognito.key}
+              </span>
+            </div>
+            <p className="shortcut-description">
+              {settings.keyboardShortcuts.openAllTabsInIncognito.description}
+            </p>
+          </div>
+        </div>
+
+        <div className="shortcut-note">
+          <p>
+            💡 <strong>Tip:</strong> To change the actual key combinations, go
+            to
+            <code>chrome://extensions/shortcuts</code> in your browser and find
+            ChromCognito.
+          </p>
+        </div>
+      </section>
+
+      <section>
         <h2>Auto-Close Settings</h2>
         <div className="setting-group">
           <label className="input-label">

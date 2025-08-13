@@ -46,6 +46,10 @@
     "open-matching-tabs-in-incognito": {
       "suggested_key": { "default": "Alt+Shift+M" },
       "description": "Open all matching-rule tabs in Incognito"
+    },
+    "open-all-tabs-in-incognito": {
+      "suggested_key": { "default": "Alt+Shift+A" },
+      "description": "Open all tabs in window in Incognito"
     }
   },
   "incognito": "split"

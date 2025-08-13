@@ -14,11 +14,45 @@ const DEFAULT_SETTINGS: Settings = {
   removeFromHistoryOnTransfer: false,
   autoCloseMinutes: null,
   domainsExcludedFromAutoClose: [],
+  keyboardShortcuts: {
+    openCurrentInIncognito: {
+      key: "Alt+Shift+I",
+      description: "Open current tab in Incognito",
+      enabled: true,
+    },
+    openMatchingTabsInIncognito: {
+      key: "Alt+Shift+M",
+      description: "Open all matching-rule tabs in Incognito",
+      enabled: true,
+    },
+    openAllTabsInIncognito: {
+      key: "Alt+Shift+A",
+      description: "Open all tabs in window in Incognito",
+      enabled: true,
+    },
+  },
+  modifierClick: {
+    enabled: true,
+    requireCmd: true,
+    requireAlt: true,
+    requireShift: false,
+    requireCtrl: false,
+  },
 };
 
 async function getSettings(): Promise<Settings> {
   const { settings } = await chrome.storage.sync.get("settings");
-  return { ...DEFAULT_SETTINGS, ...(settings || {}) };
+  const mergedSettings = { ...DEFAULT_SETTINGS, ...(settings || {}) };
+
+  // Ensure keyboard shortcuts are properly merged
+  if (settings?.keyboardShortcuts) {
+    mergedSettings.keyboardShortcuts = {
+      ...DEFAULT_SETTINGS.keyboardShortcuts,
+      ...settings.keyboardShortcuts,
+    };
+  }
+
+  return mergedSettings;
 }
 
 async function openUrlInIncognito(url: string, removeHistory: boolean) {
@@ -122,14 +156,31 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 // Commands
 chrome.commands.onCommand.addListener(async (cmd) => {
   const settings = await getSettings();
-  if (cmd === "open-current-in-incognito") {
+
+  // Check if the shortcut is enabled before executing
+  if (
+    cmd === "open-current-in-incognito" &&
+    settings.keyboardShortcuts.openCurrentInIncognito.enabled
+  ) {
     const [t] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (t?.id) await transferTab(t.id, settings.removeFromHistoryOnTransfer);
-  } else if (cmd === "open-matching-tabs-in-incognito") {
+  } else if (
+    cmd === "open-matching-tabs-in-incognito" &&
+    settings.keyboardShortcuts.openMatchingTabsInIncognito.enabled
+  ) {
     await transferTabs(
       "allMatching",
       settings.removeFromHistoryOnTransfer,
       true,
+    );
+  } else if (
+    cmd === "open-all-tabs-in-incognito" &&
+    settings.keyboardShortcuts.openAllTabsInIncognito.enabled
+  ) {
+    await transferTabs(
+      "allWindow",
+      settings.removeFromHistoryOnTransfer,
+      false,
     );
   }
 });

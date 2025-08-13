@@ -3,11 +3,31 @@ export type Rule = {
   useRegex: boolean;
 };
 
+export type KeyboardShortcut = {
+  key: string;
+  description: string;
+  enabled: boolean;
+};
+
+export type ModifierClickSettings = {
+  enabled: boolean;
+  requireCmd: boolean;
+  requireAlt: boolean;
+  requireShift: boolean;
+  requireCtrl: boolean;
+};
+
 export type Settings = {
   autoIncognitoRules: Rule[];
   removeFromHistoryOnTransfer: boolean;
   autoCloseMinutes: number | null;
   domainsExcludedFromAutoClose: string[];
+  keyboardShortcuts: {
+    openCurrentInIncognito: KeyboardShortcut;
+    openMatchingTabsInIncognito: KeyboardShortcut;
+    openAllTabsInIncognito: KeyboardShortcut;
+  };
+  modifierClick: ModifierClickSettings;
 };
 
 export type RecentlyClosedTab = {
