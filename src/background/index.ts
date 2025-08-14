@@ -33,9 +33,9 @@ const DEFAULT_SETTINGS: Settings = {
   },
   modifierClick: {
     enabled: true,
-    requireCmd: true,
+    requireCmd: false,
     requireAlt: true,
-    requireShift: false,
+    requireShift: true,
     requireCtrl: false,
   },
 };

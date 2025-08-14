@@ -125,8 +125,8 @@ const Options: React.FC = () => {
         <h2>Modifier Click Settings</h2>
         <p className="section-description">
           Configure modifier key combinations for clicking links to open them in
-          incognito mode. For example, Cmd+Alt+Click on macOS or Ctrl+Alt+Click
-          on Windows/Linux.
+          incognito mode. Default: Alt+Shift+Click (works on all platforms and
+          doesn't conflict with browser shortcuts).
         </p>
 
         <div className="setting-group">

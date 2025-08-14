@@ -1174,7 +1174,7 @@ div.p-4.w-80 {
   gap: var(--spacing-md);
   flex: 1;
   min-height: 0;
-  padding-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
 }
 
 .section-header {
