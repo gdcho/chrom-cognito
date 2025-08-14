@@ -2,8 +2,14 @@
 console.log("ChromCognito: Content script loaded");
 
 // Add a visual indicator that the script is loaded (for debugging)
+declare global {
+  interface Window {
+    chromCognitoLoaded: boolean;
+  }
+}
+
 if (typeof window !== "undefined") {
-  (window as unknown).chromCognitoLoaded = true;
+  window.chromCognitoLoaded = true;
   console.log("ChromCognito: Window object available, script fully loaded");
 }
 
