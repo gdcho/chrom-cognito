@@ -15,10 +15,7 @@ if (typeof window !== "undefined") {
 
 let modifierSettings = {
   enabled: true,
-  requireCmd: false,
-  requireAlt: true,
-  requireShift: true,
-  requireCtrl: false,
+  // Hardcoded to Alt+Shift only - no individual key configuration
 };
 
 // Load settings from storage
@@ -46,15 +43,8 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 function checkModifiers(evt: MouseEvent): boolean {
   if (!modifierSettings.enabled) return false;
 
-  let hasRequiredModifiers = true;
-  if (modifierSettings.requireCmd && !evt.metaKey) hasRequiredModifiers = false;
-  if (modifierSettings.requireAlt && !evt.altKey) hasRequiredModifiers = false;
-  if (modifierSettings.requireShift && !evt.shiftKey)
-    hasRequiredModifiers = false;
-  if (modifierSettings.requireCtrl && !evt.ctrlKey)
-    hasRequiredModifiers = false;
-
-  return hasRequiredModifiers;
+  // Hardcoded to Alt+Shift only
+  return evt.altKey && evt.shiftKey;
 }
 
 function handleLinkClick(evt: MouseEvent, eventType: string) {

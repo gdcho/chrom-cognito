@@ -33,10 +33,7 @@ const DEFAULT_SETTINGS: Settings = {
   },
   modifierClick: {
     enabled: true,
-    requireCmd: false,
-    requireAlt: true,
-    requireShift: true,
-    requireCtrl: false,
+    // Hardcoded to Alt+Shift only - no individual key configuration
   },
 };
 

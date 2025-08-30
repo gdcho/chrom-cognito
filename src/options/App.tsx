@@ -124,9 +124,9 @@ const Options: React.FC = () => {
       <section>
         <h2>Modifier Click Settings</h2>
         <p className="section-description">
-          Configure modifier key combinations for clicking links to open them in
-          incognito mode. Default: Alt+Shift+Click (works on all platforms and
-          doesn't conflict with browser shortcuts).
+          Click links with Alt+Shift+Click to open them in incognito mode. This
+          combination works on all platforms and doesn't conflict with browser
+          shortcuts.
         </p>
 
         <div className="setting-group">
@@ -147,113 +147,21 @@ const Options: React.FC = () => {
             Enable modifier click to open in incognito
           </label>
           <p className="setting-description">
-            When enabled, clicking links with the specified modifier keys will
-            open them in incognito mode.
+            When enabled, clicking links with Alt+Shift will open them in
+            incognito mode.
           </p>
         </div>
 
         {settings.modifierClick.enabled && (
-          <div className="modifier-keys-group">
-            <h3
-              style={{
-                fontSize: "var(--font-size-sm)",
-                marginBottom: "var(--spacing-md)",
-                color: "var(--color-text-primary)",
-              }}
-            >
-              Required Modifier Keys
-            </h3>
-            <div className="modifier-checkboxes">
-              <label className="modifier-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={settings.modifierClick.requireCmd}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      modifierClick: {
-                        ...settings.modifierClick,
-                        requireCmd: e.target.checked,
-                      },
-                    })
-                  }
-                />
-                <span className="modifier-key-display">⌘ Cmd</span> (macOS)
-              </label>
-
-              <label className="modifier-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={settings.modifierClick.requireCtrl}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      modifierClick: {
-                        ...settings.modifierClick,
-                        requireCtrl: e.target.checked,
-                      },
-                    })
-                  }
-                />
-                <span className="modifier-key-display">Ctrl</span>{" "}
-                (Windows/Linux)
-              </label>
-
-              <label className="modifier-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={settings.modifierClick.requireAlt}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      modifierClick: {
-                        ...settings.modifierClick,
-                        requireAlt: e.target.checked,
-                      },
-                    })
-                  }
-                />
-                <span className="modifier-key-display">Alt</span>
-              </label>
-
-              <label className="modifier-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={settings.modifierClick.requireShift}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      modifierClick: {
-                        ...settings.modifierClick,
-                        requireShift: e.target.checked,
-                      },
-                    })
-                  }
-                />
-                <span className="modifier-key-display">Shift</span>
-              </label>
-            </div>
-
-            <div className="modifier-preview">
-              <p>
-                <strong>Current combination:</strong>{" "}
-                <span className="combination-display">
-                  {[
-                    settings.modifierClick.requireCmd && "⌘ Cmd",
-                    settings.modifierClick.requireCtrl && "Ctrl",
-                    settings.modifierClick.requireAlt && "Alt",
-                    settings.modifierClick.requireShift && "Shift",
-                  ]
-                    .filter(Boolean)
-                    .join(" + ")}{" "}
-                  + Click
-                </span>
-              </p>
-              <p className="setting-description">
-                💡 Tip: Choose different combinations for macOS (⌘ Cmd) and
-                Windows/Linux (Ctrl) to work across platforms.
-              </p>
-            </div>
+          <div className="modifier-preview">
+            <p>
+              <strong>Current combination:</strong>{" "}
+              <span className="combination-display">Alt + Shift + Click</span>
+            </p>
+            <p className="setting-description">
+              💡 This combination is fixed and cannot be changed to ensure
+              consistent behavior across all platforms.
+            </p>
           </div>
         )}
       </section>

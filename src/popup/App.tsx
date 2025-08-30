@@ -342,17 +342,7 @@ const Popup: React.FC = () => {
               {settings.modifierClick && settings.modifierClick.enabled && (
                 <div className="shortcut-item-popup">
                   <span className="shortcut-desc">Click links</span>
-                  <kbd className="shortcut-key-popup">
-                    {[
-                      settings.modifierClick.requireCmd && "⌘",
-                      settings.modifierClick.requireCtrl && "Ctrl",
-                      settings.modifierClick.requireAlt && "Alt",
-                      settings.modifierClick.requireShift && "⇧",
-                    ]
-                      .filter(Boolean)
-                      .join("+")}
-                    +Click
-                  </kbd>
+                  <kbd className="shortcut-key-popup">Alt+⇧+Click</kbd>
                 </div>
               )}
             </div>

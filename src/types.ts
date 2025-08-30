@@ -11,10 +11,7 @@ export type KeyboardShortcut = {
 
 export type ModifierClickSettings = {
   enabled: boolean;
-  requireCmd: boolean;
-  requireAlt: boolean;
-  requireShift: boolean;
-  requireCtrl: boolean;
+  // Removed individual modifier key options - hardcoded to Alt+Shift only
 };
 
 export type Settings = {
