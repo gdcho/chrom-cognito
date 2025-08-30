@@ -322,15 +322,61 @@ const Popup: React.FC = () => {
                   </kbd>
                 </div>
               )}
-              {settings.keyboardShortcuts.openMatchingTabsInIncognito
-                .enabled && (
-                <div className="shortcut-item-popup">
-                  <span className="shortcut-desc">Matching tabs</span>
-                  <kbd className="shortcut-key-popup">
-                    {settings.keyboardShortcuts.openMatchingTabsInIncognito.key}
+              {!settings.keyboardShortcuts.openCurrentInIncognito.enabled && (
+                <div className="shortcut-item-popup disabled">
+                  <span className="shortcut-desc">Current tab (disabled)</span>
+                  <kbd className="shortcut-key-popup disabled">
+                    {settings.keyboardShortcuts.openCurrentInIncognito.key}
                   </kbd>
                 </div>
               )}
+
+              {settings.keyboardShortcuts.openMatchingTabsInIncognito.enabled &&
+                settings?.autoIncognitoRules?.length > 0 && (
+                  <div className="shortcut-item-popup">
+                    <span className="shortcut-desc">Matching tabs</span>
+                    <kbd className="shortcut-key-popup">
+                      {
+                        settings.keyboardShortcuts.openMatchingTabsInIncognito
+                          .key
+                      }
+                    </kbd>
+                    <span className="shortcut-status">
+                      Ready ({settings?.autoIncognitoRules?.length || 0} rules)
+                    </span>
+                  </div>
+                )}
+              {settings.keyboardShortcuts.openMatchingTabsInIncognito.enabled &&
+                (!settings?.autoIncognitoRules ||
+                  settings.autoIncognitoRules.length === 0) && (
+                  <div className="shortcut-item-popup disabled">
+                    <span className="shortcut-desc">
+                      Matching tabs (no rules)
+                    </span>
+                    <kbd className="shortcut-key-popup disabled">
+                      {
+                        settings.keyboardShortcuts.openMatchingTabsInIncognito
+                          .key
+                      }
+                    </kbd>
+                    <span className="shortcut-status warning">
+                      Add rules first
+                    </span>
+                  </div>
+                )}
+              {!settings.keyboardShortcuts.openMatchingTabsInIncognito
+                .enabled && (
+                <div className="shortcut-item-popup disabled">
+                  <span className="shortcut-desc">
+                    Matching tabs (disabled)
+                  </span>
+                  <kbd className="shortcut-key-popup disabled">
+                    {settings.keyboardShortcuts.openMatchingTabsInIncognito.key}
+                  </kbd>
+                  <span className="shortcut-status">Turned off</span>
+                </div>
+              )}
+
               {settings.keyboardShortcuts.openAllTabsInIncognito.enabled && (
                 <div className="shortcut-item-popup">
                   <span className="shortcut-desc">All tabs</span>
@@ -339,10 +385,25 @@ const Popup: React.FC = () => {
                   </kbd>
                 </div>
               )}
+              {!settings.keyboardShortcuts.openAllTabsInIncognito.enabled && (
+                <div className="shortcut-item-popup disabled">
+                  <span className="shortcut-desc">All tabs (disabled)</span>
+                  <kbd className="shortcut-key-popup disabled">
+                    {settings.keyboardShortcuts.openAllTabsInIncognito.key}
+                  </kbd>
+                </div>
+              )}
+
               {settings.modifierClick && settings.modifierClick.enabled && (
                 <div className="shortcut-item-popup">
                   <span className="shortcut-desc">Click links</span>
                   <kbd className="shortcut-key-popup">Alt+⇧+Click</kbd>
+                </div>
+              )}
+              {settings.modifierClick && !settings.modifierClick.enabled && (
+                <div className="shortcut-item-popup disabled">
+                  <span className="shortcut-desc">Click links (disabled)</span>
+                  <kbd className="shortcut-key-popup disabled">Alt+⇧+Click</kbd>
                 </div>
               )}
             </div>

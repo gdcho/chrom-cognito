@@ -3,6 +3,7 @@ import type { Rule, Settings } from "../types";
 
 export const DEFAULT_SETTINGS: Settings = {
   autoIncognitoRules: [],
+  autoIncognitoEnabled: true,
   removeFromHistoryOnTransfer: false,
   autoCloseMinutes: null,
   domainsExcludedFromAutoClose: [],

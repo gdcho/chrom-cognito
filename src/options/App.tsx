@@ -64,6 +64,28 @@ const Options: React.FC = () => {
           Add URL patterns that should automatically open in incognito mode. Use
           wildcards (*) or enable regex for advanced patterns.
         </p>
+
+        <div className="setting-group">
+          <label className="main-checkbox-label">
+            <input
+              type="checkbox"
+              checked={settings.autoIncognitoEnabled}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  autoIncognitoEnabled: e.target.checked,
+                })
+              }
+            />
+            Enable automatic incognito opening
+          </label>
+          <p className="setting-description">
+            When enabled, tabs matching your rules will automatically open in
+            incognito mode. When disabled, rules are only used for manual
+            shortcuts.
+          </p>
+        </div>
+
         <div className="rules-list">
           {settings.autoIncognitoRules.map((r, i) => (
             <div key={i} className="rule-row">

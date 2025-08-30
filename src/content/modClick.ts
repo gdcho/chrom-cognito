@@ -19,26 +19,32 @@ let modifierSettings = {
 };
 
 // Load settings from storage
-chrome.storage.sync.get("settings", (result) => {
-  if (result.settings?.modifierClick) {
-    modifierSettings = {
-      ...modifierSettings,
-      ...result.settings.modifierClick,
-    };
-    console.log("ChromCognito: Settings loaded", modifierSettings);
-  }
-});
+if (typeof chrome !== "undefined" && chrome.storage) {
+  chrome.storage.sync.get("settings", (result) => {
+    if (result.settings?.modifierClick) {
+      modifierSettings = {
+        ...modifierSettings,
+        ...result.settings.modifierClick,
+      };
+      console.log("ChromCognito: Settings loaded", modifierSettings);
+    }
+  });
 
-// Listen for settings updates
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === "sync" && changes.settings?.newValue?.modifierClick) {
-    modifierSettings = {
-      ...modifierSettings,
-      ...changes.settings.newValue.modifierClick,
-    };
-    console.log("ChromCognito: Settings updated", modifierSettings);
-  }
-});
+  // Listen for settings updates
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === "sync" && changes.settings?.newValue?.modifierClick) {
+      modifierSettings = {
+        ...modifierSettings,
+        ...changes.settings.newValue.modifierClick,
+      };
+      console.log("ChromCognito: Settings updated", modifierSettings);
+    }
+  });
+} else {
+  console.warn(
+    "ChromCognito: chrome.storage not available, using default settings",
+  );
+}
 
 function checkModifiers(evt: MouseEvent): boolean {
   if (!modifierSettings.enabled) return false;
@@ -61,6 +67,14 @@ function handleLinkClick(evt: MouseEvent, eventType: string) {
   if (evt.button !== 0) return;
 
   if (!checkModifiers(evt)) return;
+
+  // If modifier click is disabled, don't interfere with normal link behavior
+  if (!modifierSettings.enabled) {
+    console.log(
+      "ChromCognito: Modifier click detected but feature is disabled",
+    );
+    return;
+  }
 
   // Find an <a> element in the path
   const path = evt.composedPath ? evt.composedPath() : [];
@@ -125,7 +139,7 @@ function setupEventListeners() {
   document.addEventListener(
     "click",
     (evt) => {
-      if (checkModifiers(evt)) {
+      if (checkModifiers(evt) && modifierSettings.enabled) {
         evt.preventDefault();
         evt.stopPropagation();
         evt.stopImmediatePropagation();
@@ -140,7 +154,7 @@ function setupEventListeners() {
   document.addEventListener(
     "auxclick",
     (evt) => {
-      if (checkModifiers(evt)) {
+      if (checkModifiers(evt) && modifierSettings.enabled) {
         evt.preventDefault();
         evt.stopPropagation();
         evt.stopImmediatePropagation();

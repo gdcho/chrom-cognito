@@ -16,6 +16,7 @@ export type ModifierClickSettings = {
 
 export type Settings = {
   autoIncognitoRules: Rule[];
+  autoIncognitoEnabled: boolean;
   removeFromHistoryOnTransfer: boolean;
   autoCloseMinutes: number | null;
   domainsExcludedFromAutoClose: string[];

@@ -11,6 +11,7 @@ import {
 
 const DEFAULT_SETTINGS: Settings = {
   autoIncognitoRules: [],
+  autoIncognitoEnabled: true,
   removeFromHistoryOnTransfer: false,
   autoCloseMinutes: null,
   domainsExcludedFromAutoClose: [],
@@ -117,7 +118,13 @@ async function enforceAutoRules(
 ) {
   if (!tab.url || tab.incognito) return;
   const settings = await getSettings();
-  if (anyRuleMatches(tab.url, settings.autoIncognitoRules)) {
+
+  // Only auto-transfer if auto-incognito is enabled
+  if (
+    settings.autoIncognitoEnabled &&
+    anyRuleMatches(tab.url, settings.autoIncognitoRules)
+  ) {
+    console.log("ChromCognito: Auto-transferring tab to incognito:", tab.url);
     await transferTab(tabId, settings.removeFromHistoryOnTransfer);
   }
 }

@@ -782,9 +782,17 @@ body:has(.options-container) {
   padding: var(--spacing-xs) 0;
 }
 
+.shortcut-item-popup.disabled {
+  opacity: 0.6;
+}
+
 .shortcut-desc {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
+}
+
+.shortcut-desc.disabled {
+  color: var(--color-text-muted);
 }
 
 .shortcut-key-popup {
@@ -797,6 +805,22 @@ body:has(.options-container) {
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--color-border-light);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-key-popup.disabled {
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+  background-color: var(--color-secondary-bg);
+}
+
+.shortcut-status {
+  font-size: var(--font-size-xs);
+  color: var(--color-accent-green);
+  margin-left: var(--spacing-xs);
+}
+
+.shortcut-status.warning {
+  color: var(--color-recording-red);
 }
 
 /* Modifier Click Settings Styling */
