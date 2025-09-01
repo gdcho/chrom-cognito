@@ -320,7 +320,7 @@ const Options: React.FC = () => {
             </span>
             <span className="footer-divider"> | </span>
             <a
-              href="https://www.buymeacoffee.com/yourname"
+              href="https://www.buymeacoffee.com/rjsgml"
               target="_blank"
               rel="noreferrer"
               className="link-secondary"

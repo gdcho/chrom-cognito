@@ -755,7 +755,7 @@ body:has(.options-container) {
   border: 1px solid var(--color-border-light);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .shortcuts-header {
@@ -776,10 +776,11 @@ body:has(.options-container) {
 }
 
 .shortcut-item-popup {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  padding: var(--spacing-xs) 0;
+  padding: var(--spacing-sm) 0;
+  gap: var(--spacing-sm);
 }
 
 .shortcut-item-popup.disabled {
@@ -805,6 +806,8 @@ body:has(.options-container) {
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--color-border-light);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 80px;
 }
 
 .shortcut-key-popup.disabled {
@@ -816,7 +819,8 @@ body:has(.options-container) {
 .shortcut-status {
   font-size: var(--font-size-xs);
   color: var(--color-accent-green);
-  margin-left: var(--spacing-xs);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .shortcut-status.warning {
@@ -1065,7 +1069,7 @@ div.p-4.w-80 {
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-lg);
   width: 100%;
 }
 
@@ -1195,7 +1199,7 @@ div.p-4.w-80 {
 .recently-closed-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   flex: 1;
   min-height: 0;
   padding-bottom: var(--spacing-lg);

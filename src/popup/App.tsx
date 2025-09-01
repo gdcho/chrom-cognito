@@ -337,16 +337,22 @@ const Popup: React.FC = () => {
               {settings.keyboardShortcuts.openMatchingTabsInIncognito.enabled &&
                 settings?.autoIncognitoRules?.length > 0 && (
                   <div className="shortcut-item-popup">
-                    <span className="shortcut-desc">Matching tabs</span>
+                    <span className="shortcut-desc">
+                      Matching tabs{" "}
+                      <span className="shortcut-status">
+                        ({settings?.autoIncognitoRules?.length || 0} rule
+                        {settings?.autoIncognitoRules?.length !== 1
+                          ? "s"
+                          : ""}{" "}
+                        ready)
+                      </span>
+                    </span>
                     <kbd className="shortcut-key-popup">
                       {
                         settings.keyboardShortcuts.openMatchingTabsInIncognito
                           .key
                       }
                     </kbd>
-                    <span className="shortcut-status">
-                      Ready ({settings?.autoIncognitoRules?.length || 0} rules)
-                    </span>
                   </div>
                 )}
               {settings.keyboardShortcuts.openMatchingTabsInIncognito.enabled &&
@@ -514,7 +520,7 @@ const Popup: React.FC = () => {
             </span>
             <span className="footer-divider"> | </span>
             <a
-              href="https://www.buymeacoffee.com/yourname"
+              href="https://www.buymeacoffee.com/rjsgml"
               target="_blank"
               rel="noreferrer"
               className="link-secondary"
