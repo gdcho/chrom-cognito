@@ -1,69 +1,91 @@
-# React + TypeScript + Vite
+# Pulse Play
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Chrome extension for instant video playback speed control with customizable hotkeys and visual feedback.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Instant Speed Control**: Hold down a customizable hotkey to temporarily speed up video playback
+- **Visual Feedback**: See current playback speed with customizable visual indicators
+- **Universal Compatibility**: Works on YouTube, Netflix, Vimeo, and any website with HTML5 video
+- **Modifier Click Support**: Click with modifier keys (Ctrl/Cmd/Alt/Shift) for quick speed adjustments
+- **Customizable Settings**: Configure hotkeys, speed multipliers, and visual preferences
+- **Platform-Specific Controls**: Enable/disable functionality for specific websites
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### From Chrome Web Store
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+_Coming soon - extension is currently under review_
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Manual Installation (Development)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone this repository
+2. Install dependencies: `npm install`
+3. Build the extension: `npm run build`
+4. Open Chrome and go to `chrome://extensions/`
+5. Enable "Developer mode"
+6. Click "Load unpacked" and select the `dist` folder
+
+## Usage
+
+1. **Basic Speed Control**: Hold your configured hotkey while watching any video to speed it up
+2. **Modifier Clicks**: Click on videos with Ctrl/Cmd/Alt/Shift for instant speed boosts
+3. **Settings**: Click the extension icon to customize hotkeys, speeds, and visual indicators
+4. **Platform Control**: Enable/disable the extension for specific websites in settings
+
+## Development
+
+Built with:
+
+- React + TypeScript
+- Vite for fast development and building
+- Chrome Extension Manifest V3
+- Tailwind CSS for styling
+
+### Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview built extension
+
+### Project Structure
+
+```
+src/
+├── background/     # Service worker
+├── content/        # Content scripts
+├── popup/          # Extension popup UI
+├── options/        # Options page
+├── components/     # Shared React components
+└── types.ts        # TypeScript definitions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Privacy
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Pulse Play respects your privacy:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **No data collection**: We don't collect any personal information
+- **Local storage only**: All preferences are stored locally in your browser
+- **No external communication**: The extension works entirely offline
+- **Minimal permissions**: Only requests necessary permissions for video control
+
+See our full [Privacy Policy](privacy.md) for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes and test thoroughly
+4. Submit a pull request
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you encounter issues or have suggestions:
+
+- Open an issue on GitHub
+- Check existing issues for solutions
+- Provide detailed information about your browser and the website where issues occur
