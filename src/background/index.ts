@@ -62,14 +62,26 @@ async function redirectTabToIncognito(
   url: string,
   removeHistory: boolean,
 ) {
-  // Create incognito tab first
-  await openUrlInIncognito(url, removeHistory);
+  // Prevent duplicate redirects
+  if (redirectingTabs.has(tabId)) {
+    return;
+  }
 
-  // Then close the original tab
+  redirectingTabs.add(tabId);
+
   try {
-    await chrome.tabs.remove(tabId);
-  } catch {
-    // Silent error handling
+    // Create incognito tab first
+    await openUrlInIncognito(url, removeHistory);
+
+    // Then close the original tab
+    try {
+      await chrome.tabs.remove(tabId);
+    } catch {
+      // Silent error handling
+    }
+  } finally {
+    // Always clean up the tracking
+    redirectingTabs.delete(tabId);
   }
 }
 
@@ -267,6 +279,7 @@ chrome.commands.onCommand.addListener(async (cmd) => {
 
 // Track updates + enforce rules + activity
 const tabUrls: Record<number, { url: string; incognito: boolean }> = {};
+const redirectingTabs = new Set<number>(); // Track tabs being redirected to prevent duplicates
 
 // Track all tabs when they're created
 chrome.tabs.onCreated.addListener(async (tab) => {
@@ -288,6 +301,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       settings.autoIncognitoEnabled &&
       anyRuleMatches(tab.url, settings.autoIncognitoRules)
     ) {
+      // Skip if this is a chrome:// or extension:// URL
+      if (
+        tab.url.startsWith("chrome://") ||
+        tab.url.startsWith("chrome-extension://")
+      ) {
+        return;
+      }
+
       // Immediately redirect to incognito instead of batching
       await redirectTabToIncognito(
         tabId,
