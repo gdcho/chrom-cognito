@@ -4,7 +4,7 @@
 
 **Character count: 604/1000**
 
-Chromcognito is a single-purpose Chrome extension designed to provide instant video playback speed control. The extension allows users to temporarily speed up video content on any website by holding down a customizable hotkey, with visual feedback showing the current speed. When the hotkey is released, the video returns to normal playback speed. This single purpose is narrow and focused solely on enhancing video viewing experience through temporary speed control, making it easy for users to save time while watching educational content, tutorials, or any video that benefits from accelerated playback.
+Chromcognito is a single-purpose Chrome extension designed to open, route, and manage tabs in Incognito mode with rules, shortcuts, and auto-cleanups. The extension allows users to automatically redirect specific websites to incognito mode based on URL patterns, manually transfer tabs using keyboard shortcuts or modifier clicks, and manage recently closed incognito tabs. This single purpose is narrow and focused solely on enhancing privacy and incognito tab management, making it easy for users to maintain privacy while browsing specific websites or content types.
 
 ## Permission Justifications
 
@@ -12,19 +12,19 @@ Chromcognito is a single-purpose Chrome extension designed to provide instant vi
 
 **Character count: 413/1000**
 
-The `activeTab` permission is required to access the currently active tab when the extension popup is opened. This allows us to read the current page's URL to determine if video speed controls should be enabled, and to inject our content script only when needed. Without this permission, we cannot detect the current page context or provide the video speed functionality that is the core purpose of the extension.
+The `activeTab` permission is required to access the currently active tab when the extension popup is opened. This allows us to read the current page's URL to determine if it matches incognito rules, and to transfer the current tab to incognito mode when requested. Without this permission, we cannot detect the current page context or provide the tab management functionality that is the core purpose of the extension.
 
 ### storage Permission
 
 **Character count: 495/1000**
 
-The `storage` permission is essential for saving and retrieving user preferences and settings. This includes hotkey configurations, speed multiplier preferences, visual indicator settings, and platform-specific enable/disable options. The storage permission enables the extension to remember user choices across browser sessions and devices, providing a consistent and personalized experience. Without this permission, users would lose their customizations every time they restart their browser.
+The `storage` permission is essential for saving and retrieving user preferences and settings. This includes auto-incognito URL rules, keyboard shortcut configurations, modifier click settings, and history management options. The storage permission enables the extension to remember user choices across browser sessions and devices, providing a consistent and personalized experience. Without this permission, users would lose their customizations every time they restart their browser.
 
 ### Host Permission
 
 **Character count: 498/1000**
 
-The host permissions (`https://*/*` and `http://*/*`) are necessary for the extension to detect and control video players across various websites. These permissions allow Chromcognito to work on different video platforms including YouTube, Netflix, Vimeo, educational platforms, and any website with HTML5 video content. The extension only accesses video elements and does not collect, read, or transmit any website content or user data beyond what's necessary for video speed control functionality.
+The host permissions (`https://*/*` and `http://*/*`) are necessary for the extension to detect link clicks with modifier keys across all websites. These permissions allow Chromcognito to work on any website where users want to open links in incognito mode using Alt+Shift+Click. The extension only monitors link clicks with specific modifier combinations and does not collect, read, or transmit any website content or user data beyond what's necessary for incognito tab management functionality.
 
 ## Remote Code Usage
 

@@ -1,21 +1,15 @@
 # Chromcognito
 
-A Chrome extension for instant video playback speed control with customizable hotkeys and visual feedback.
+A Chrome extension for opening, routing, and managing tabs in Incognito mode with rules, shortcuts, and auto-cleanups.
 
 ## Features
 
-- **Instant Speed Control**: Hold down a customizable hotkey to temporarily speed up video playback
-- **Visual Feedback**: See current playback speed with customizable visual indicators
-- **Universal Compatibility**: Works on YouTube, Netflix, Vimeo, and any website with HTML5 video
-- **Modifier Click Support**: Click with modifier keys (Ctrl/Cmd/Alt/Shift) for quick speed adjustments
-- **Customizable Settings**: Configure hotkeys, speed multipliers, and visual preferences
-- **Platform-Specific Controls**: Enable/disable functionality for specific websites
-
-## Installation
-
-### From Chrome Web Store
-
-_Coming soon - extension is currently under review_
+- **Auto-Incognito Rules**: Automatically redirect specific websites to incognito mode based on URL patterns
+- **Keyboard Shortcuts**: Quick access to transfer current tab, matching tabs, or all tabs to incognito
+- **Modifier Click Support**: Alt+Shift+Click any link to open it in incognito mode
+- **Recently Closed Tracking**: View and reopen recently closed incognito tabs
+- **History Management**: Optionally remove transferred tabs from regular browsing history
+- **Context Menu Integration**: Right-click options to open links or pages in incognito
 
 ### Manual Installation (Development)
 
@@ -28,10 +22,11 @@ _Coming soon - extension is currently under review_
 
 ## Usage
 
-1. **Basic Speed Control**: Hold your configured hotkey while watching any video to speed it up
-2. **Modifier Clicks**: Click on videos with Ctrl/Cmd/Alt/Shift for instant speed boosts
-3. **Settings**: Click the extension icon to customize hotkeys, speeds, and visual indicators
-4. **Platform Control**: Enable/disable the extension for specific websites in settings
+1. **Auto-Incognito**: Add URL patterns in settings to automatically redirect matching sites to incognito
+2. **Manual Transfer**: Use keyboard shortcuts (Alt+Shift+I/M/A) to transfer tabs to incognito
+3. **Modifier Clicks**: Hold Alt+Shift and click any link to open it in incognito mode
+4. **Recently Closed**: View and reopen recently closed incognito tabs from the popup
+5. **Settings**: Configure rules, shortcuts, and history management options
 
 ## Development
 
@@ -65,9 +60,9 @@ src/
 Chromcognito respects your privacy:
 
 - **No data collection**: We don't collect any personal information
-- **Local storage only**: All preferences are stored locally in your browser
+- **Local storage only**: All preferences and recently closed tabs are stored locally in your browser
 - **No external communication**: The extension works entirely offline
-- **Minimal permissions**: Only requests necessary permissions for video control
+- **Minimal permissions**: Only requests necessary permissions for tab management and incognito functionality
 
 See our full [Privacy Policy](privacy.md) for details.
 

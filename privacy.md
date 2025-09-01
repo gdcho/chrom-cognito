@@ -1,19 +1,19 @@
 # Privacy Policy for Chromcognito
 
-**Last updated: January 9, 2025**
+**Last updated: September 1, 2025**
 
 ## Overview
 
-Chromcognito is a Chrome extension designed to provide instant video playback speed control. This privacy policy explains how we handle data in our extension.
+Chromcognito is a Chrome extension designed to open, route, and manage tabs in Incognito mode with rules, shortcuts, and auto-cleanups. This privacy policy explains how we handle data in our extension.
 
 ## Data Collection
 
 **We do not collect any user data.** Chromcognito operates entirely locally on your device and does not:
 
 - Collect personally identifiable information
-- Track your browsing history
-- Monitor your web activity
-- Access website content beyond video elements
+- Track your browsing history beyond recently closed incognito tabs
+- Monitor your web activity beyond detecting modifier clicks on links
+- Access website content beyond link URLs for incognito redirection
 - Transmit any data to external servers
 - Store any personal information
 
@@ -21,10 +21,11 @@ Chromcognito is a Chrome extension designed to provide instant video playback sp
 
 The extension only stores user preferences locally in your browser, including:
 
-- Hotkey configurations
-- Speed multiplier preferences
-- Visual indicator settings
-- Platform-specific enable/disable options
+- Auto-incognito URL rules and patterns
+- Keyboard shortcut enable/disable settings
+- Modifier click enable/disable settings
+- History management preferences
+- Recently closed incognito tab URLs and titles (for restoration purposes)
 
 This data remains on your device and is never transmitted elsewhere.
 
@@ -40,7 +41,7 @@ Used to save and retrieve user preferences locally in your browser. This enables
 
 ### Host Permissions (https://_/_ and http://_/_)
 
-Required to detect and control video players across various websites. The extension only accesses video elements and does not read or collect any other website content.
+Required to detect modifier key clicks on links across all websites. The extension only monitors link clicks with Alt+Shift combination and does not read or collect any other website content.
 
 ## Third-Party Data Sharing
 
@@ -56,7 +57,7 @@ We may update this privacy policy from time to time. Any changes will be posted 
 
 ## Contact
 
-If you have questions about this privacy policy, please contact us through our GitHub repository: https://github.com/gdcho/chromcognito
+If you have questions about this privacy policy, please contact us through our GitHub repository: https://github.com/gdcho/chrom-cognito
 
 ## Compliance
 
