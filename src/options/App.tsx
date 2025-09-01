@@ -309,54 +309,7 @@ const Options: React.FC = () => {
         </div>
       </section>
 
-      <section>
-        <h2>Auto-Close Settings</h2>
-        <div className="setting-group">
-          <label className="input-label">
-            Auto-close incognito tabs after (minutes, 0 or blank to disable)
-          </label>
-          <input
-            type="number"
-            className="number-input"
-            value={settings.autoCloseMinutes ?? ""}
-            placeholder="0"
-            min="0"
-            onChange={(e) =>
-              setSettings({
-                ...settings,
-                autoCloseMinutes: e.target.value
-                  ? Number(e.target.value)
-                  : null,
-              })
-            }
-          />
-        </div>
 
-        <div className="setting-group">
-          <label className="input-label">
-            Excluded domains (comma separated)
-          </label>
-          <input
-            type="text"
-            className="text-input-full"
-            value={settings.domainsExcludedFromAutoClose.join(",")}
-            placeholder="example.com, important-site.org"
-            onChange={(e) =>
-              setSettings({
-                ...settings,
-                domainsExcludedFromAutoClose: e.target.value
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean),
-              })
-            }
-          />
-          <p className="setting-description">
-            Tabs from these domains will not be automatically closed, even if
-            auto-close is enabled.
-          </p>
-        </div>
-      </section>
 
       <button className="btn btn-primary save-button" onClick={save}>
         Save Settings

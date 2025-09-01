@@ -12,5 +12,10 @@ export const pushClosed = async (tab: RecentlyClosedTab) => {
 export const getRecentlyClosed = async (): Promise<RecentlyClosedTab[]> => {
   const store = chrome.storage.session ?? chrome.storage.local;
   const { [KEY]: arr = [] } = await store.get(KEY);
-  return arr;
+
+  // Handle backward compatibility - add incognito field to existing data
+  return arr.map((tab: Partial<RecentlyClosedTab>) => ({
+    ...tab,
+    incognito: tab.incognito ?? false, // Default to false for existing data
+  }));
 };

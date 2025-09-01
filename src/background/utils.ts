@@ -5,8 +5,6 @@ export const DEFAULT_SETTINGS: Settings = {
   autoIncognitoRules: [],
   autoIncognitoEnabled: true,
   removeFromHistoryOnTransfer: false,
-  autoCloseMinutes: null,
-  domainsExcludedFromAutoClose: [],
   keyboardShortcuts: {
     openCurrentInIncognito: {
       key: "Alt+Shift+I",

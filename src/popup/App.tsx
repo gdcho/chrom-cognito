@@ -30,6 +30,9 @@ const Popup: React.FC = () => {
   });
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Filter to only show incognito tabs
+  const incognitoTabs = recent.filter((r) => r.incognito);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -414,9 +417,10 @@ const Popup: React.FC = () => {
         <div className="recently-closed-section">
           <div className="section-header">
             <h3 className="section-title">Recently Closed (Incognito)</h3>
-            {!loadingState.recentTabs && recent.length > 0 && (
+            {!loadingState.recentTabs && incognitoTabs.length > 0 && (
               <span className="section-count">
-                {recent.length} {recent.length === 1 ? "tab" : "tabs"}
+                {incognitoTabs.length}{" "}
+                {incognitoTabs.length === 1 ? "tab" : "tabs"}
               </span>
             )}
             {loadingState.recentTabs && <LoadingSpinner size="sm" />}
@@ -456,10 +460,10 @@ const Popup: React.FC = () => {
                 );
               }}
             />
-          ) : recent.length > 0 ? (
+          ) : incognitoTabs.length > 0 ? (
             <div className="recently-closed-container" ref={containerRef}>
               <ul className="recently-closed-list" role="list">
-                {recent.map((r, i) => (
+                {incognitoTabs.map((r, i) => (
                   <li key={i} className="recently-closed-item" role="listitem">
                     <a
                       className="recently-closed-link"

@@ -18,8 +18,6 @@ export type Settings = {
   autoIncognitoRules: Rule[];
   autoIncognitoEnabled: boolean;
   removeFromHistoryOnTransfer: boolean;
-  autoCloseMinutes: number | null;
-  domainsExcludedFromAutoClose: string[];
   keyboardShortcuts: {
     openCurrentInIncognito: KeyboardShortcut;
     openMatchingTabsInIncognito: KeyboardShortcut;
@@ -32,6 +30,7 @@ export type RecentlyClosedTab = {
   url: string;
   title: string;
   closedAt: number;
+  incognito: boolean;
 };
 
 export type TransferMode = "current" | "allMatching" | "allWindow";

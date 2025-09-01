@@ -3,8 +3,6 @@ import { anyRuleMatches } from "./rules";
 import { removeFromHistory } from "./history";
 import { pushClosed } from "./recentlyClosed";
 import {
-  handleAlarm,
-  initAutoClose,
   trackActivity,
   clearTab,
 } from "./autoClose";
@@ -13,8 +11,6 @@ const DEFAULT_SETTINGS: Settings = {
   autoIncognitoRules: [],
   autoIncognitoEnabled: true,
   removeFromHistoryOnTransfer: false,
-  autoCloseMinutes: null,
-  domainsExcludedFromAutoClose: [],
   keyboardShortcuts: {
     openCurrentInIncognito: {
       key: "Alt+Shift+I",
@@ -55,7 +51,12 @@ async function getSettings(): Promise<Settings> {
 
 async function openUrlInIncognito(url: string, removeHistory: boolean) {
   const win = await chrome.windows.create({ incognito: true, url });
-  if (removeHistory) await removeFromHistory(url);
+  if (removeHistory) {
+    // Add a small delay to ensure the history entry is created first
+    setTimeout(async () => {
+      await removeFromHistory(url);
+    }, 1000);
+  }
   return win;
 }
 
@@ -196,15 +197,18 @@ async function openMultipleUrlsInIncognito(
         }
 
         if (removeHistory) {
-          try {
-            await removeFromHistory(url);
-            console.log(`ChromCognito: Removed from history: ${url}`);
-          } catch (error) {
-            console.error(
-              `ChromCognito: Failed to remove from history: ${url}`,
-              error,
-            );
-          }
+          // Add a small delay to ensure the history entry is created first
+          setTimeout(async () => {
+            try {
+              await removeFromHistory(url);
+              console.log(`ChromCognito: Removed from history: ${url}`);
+            } catch (error) {
+              console.error(
+                `ChromCognito: Failed to remove from history: ${url}`,
+                error,
+              );
+            }
+          }, 1000);
         }
 
         // Small delay between window creations
@@ -312,7 +316,10 @@ async function processBatchRuleMatches() {
         url: tab.url,
       });
       if (settings.removeFromHistoryOnTransfer) {
-        await removeFromHistory(tab.url!);
+        // Add a small delay to ensure the history entry is created first
+        setTimeout(async () => {
+          await removeFromHistory(tab.url!);
+        }, 1000);
       }
     } catch (error) {
       console.error(
@@ -387,7 +394,6 @@ chrome.runtime.onInstalled.addListener(() => {
     title: "Open this page in Incognito",
     contexts: ["page"],
   });
-  initAutoClose();
 });
 
 // Context click
@@ -435,20 +441,24 @@ chrome.commands.onCommand.addListener(async (cmd) => {
   }
 });
 
-// Track closes (for Recently Closed)
-chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
-  clearTab(tabId);
-  if (!removeInfo || !removeInfo.isWindowClosing) {
-    // we can't get url in onRemoved -> store in onUpdated/Activated
-    // Workaround: we track URLs in memory
+// Track updates + enforce rules + activity
+const tabUrls: Record<number, { url: string; incognito: boolean }> = {};
+
+// Track all tabs when they're created
+chrome.tabs.onCreated.addListener(async (tab) => {
+  if (tab.url) {
+    tabUrls[tab.id!] = { url: tab.url, incognito: tab.incognito };
+    console.log(`Tab created: ${tab.id}, incognito: ${tab.incognito}, url: ${tab.url}`);
   }
+
+
 });
 
-// Track updates + enforce rules + activity
-const tabUrls: Record<number, string> = {};
-
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.url) tabUrls[tabId] = changeInfo.url;
+  if (changeInfo.url) {
+    tabUrls[tabId] = { url: changeInfo.url, incognito: tab.incognito };
+    console.log(`Tab updated: ${tabId}, incognito: ${tab.incognito}, url: ${changeInfo.url}`);
+  }
   trackActivity(tabId);
 
   // Use batching for auto-rules instead of immediate processing
@@ -460,25 +470,78 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   trackActivity(activeInfo.tabId);
   const tab = await chrome.tabs.get(activeInfo.tabId);
-  if (tab.url) tabUrls[activeInfo.tabId] = tab.url;
+  if (tab.url) {
+    tabUrls[activeInfo.tabId] = { url: tab.url, incognito: tab.incognito };
+  }
+});
+
+// Track all existing tabs when the extension starts
+chrome.tabs.query({}, (tabs) => {
+  for (const tab of tabs) {
+    if (tab.id && tab.url) {
+      tabUrls[tab.id] = { url: tab.url, incognito: tab.incognito };
+      console.log(`Initial tab: ${tab.id}, incognito: ${tab.incognito}, url: ${tab.url}`);
+    }
+  }
+});
+
+// Handle window closing to capture all tabs in the window
+chrome.windows.onRemoved.addListener(async (windowId) => {
+  console.log(`Window closed: ${windowId}`);
+
+  // Immediately query for all tabs to see if any were in this window
+  try {
+    const allTabs = await chrome.tabs.query({});
+    console.log(`Total tabs after window close: ${allTabs.length}`);
+
+    // Check if any tabs we were tracking are now missing (indicating they were in the closed window)
+    const trackedTabIds = Object.keys(tabUrls).map(Number);
+    const currentTabIds = allTabs.map((tab) => tab.id).filter((id) => id !== undefined) as number[];
+
+    const missingTabIds = trackedTabIds.filter((id) => !currentTabIds.includes(id));
+    console.log(`Missing tab IDs: ${missingTabIds.join(", ")}`);
+
+    // Save any missing incognito tabs
+    for (const tabId of missingTabIds) {
+      const tabInfo = tabUrls[tabId];
+      if (tabInfo && tabInfo.incognito) {
+        console.log(`Saving missing incognito tab: ${tabId}, url: ${tabInfo.url}`);
+        await pushClosed({
+          url: tabInfo.url,
+          title: "",
+          closedAt: Date.now(),
+          incognito: tabInfo.incognito,
+        });
+      }
+      // Clean up the tracking
+      delete tabUrls[tabId];
+    }
+  } catch (error) {
+    console.log(`Error handling window close: ${error}`);
+  }
 });
 
 // Keep recently closed
-chrome.tabs.onRemoved.addListener(async (tabId) => {
-  const url = tabUrls[tabId];
-  if (!url) return;
-  const title = ""; // We could store titles similarly
-  await pushClosed({ url, title, closedAt: Date.now() });
-  delete tabUrls[tabId];
-});
+chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+  clearTab(tabId);
 
-// Alarms
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "chromcognito-auto-close") {
-    const settings = await getSettings();
-    await handleAlarm(settings);
+  const tabInfo = tabUrls[tabId];
+  if (tabInfo) {
+    console.log(`Tab closed: ${tabId}, incognito: ${tabInfo.incognito}, url: ${tabInfo.url}, isWindowClosing: ${removeInfo?.isWindowClosing}`);
+    const title = ""; // We could store titles similarly
+    await pushClosed({
+      url: tabInfo.url,
+      title,
+      closedAt: Date.now(),
+      incognito: tabInfo.incognito,
+    });
+    delete tabUrls[tabId];
+  } else {
+    console.log(`Tab closed but no info found: ${tabId}, isWindowClosing: ${removeInfo?.isWindowClosing}`);
   }
 });
+
+
 
 // Messages (from popup/options/content)
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
