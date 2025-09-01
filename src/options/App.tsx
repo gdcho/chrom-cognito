@@ -298,18 +298,7 @@ const Options: React.FC = () => {
             </p>
           </div>
         </div>
-
-        <div className="shortcut-note">
-          <p>
-            💡 <strong>Tip:</strong> To change the actual key combinations, go
-            to
-            <code>chrome://extensions/shortcuts</code> in your browser and find
-            ChromCognito.
-          </p>
-        </div>
       </section>
-
-
 
       <button className="btn btn-primary save-button" onClick={save}>
         Save Settings

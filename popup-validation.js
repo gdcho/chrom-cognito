@@ -12,7 +12,6 @@ class PopupValidator {
 
   log(message, type = "info") {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
 
     if (type === "pass") this.testsPassed++;
     if (type !== "info") this.testsTotal++;
@@ -459,7 +458,6 @@ class PopupValidator {
       results: this.results,
     };
 
-    console.log("Test Report:", JSON.stringify(report, null, 2));
     return report;
   }
 }

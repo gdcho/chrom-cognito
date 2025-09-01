@@ -2,10 +2,7 @@ import type { Settings, TransferMode } from "../types";
 import { anyRuleMatches } from "./rules";
 import { removeFromHistory } from "./history";
 import { pushClosed } from "./recentlyClosed";
-import {
-  trackActivity,
-  clearTab,
-} from "./autoClose";
+import { trackActivity, clearTab } from "./autoClose";
 
 const DEFAULT_SETTINGS: Settings = {
   autoIncognitoRules: [],
@@ -60,6 +57,22 @@ async function openUrlInIncognito(url: string, removeHistory: boolean) {
   return win;
 }
 
+async function redirectTabToIncognito(
+  tabId: number,
+  url: string,
+  removeHistory: boolean,
+) {
+  // Create incognito tab first
+  await openUrlInIncognito(url, removeHistory);
+
+  // Then close the original tab
+  try {
+    await chrome.tabs.remove(tabId);
+  } catch {
+    // Silent error handling
+  }
+}
+
 async function transferTab(tabId: number, removeHistory: boolean) {
   const tab = await chrome.tabs.get(tabId);
   if (!tab.url) return;
@@ -97,7 +110,6 @@ async function transferTabs(
 
   // Extract URLs for the new approach
   const urlStrings = urls.map((t) => t.url!);
-  console.log(`ChromCognito: URLs to transfer:`, urlStrings);
 
   // Use the new approach that creates individual incognito windows
   const incogWindow = await openMultipleUrlsInIncognito(
@@ -106,22 +118,12 @@ async function transferTabs(
   );
 
   if (incogWindow) {
-    console.log(
-      `ChromCognito: Successfully created incognito windows with all tabs`,
-    );
-
     // Close original tabs only if we successfully created the incognito windows
     try {
-      console.log(`ChromCognito: Closing ${urls.length} original tabs`);
       await chrome.tabs.remove(urls.map((t) => t.id!));
-      console.log(`ChromCognito: Successfully closed all original tabs`);
-    } catch (error) {
-      console.error("ChromCognito: Failed to remove original tabs:", error);
+    } catch {
+      // Silent error handling
     }
-  } else {
-    console.error(
-      `ChromCognito: Failed to create incognito windows, not closing originals`,
-    );
   }
 }
 
@@ -130,39 +132,23 @@ async function openMultipleUrlsInIncognito(
   urls: string[],
   removeHistory: boolean,
 ) {
-  console.log(
-    `ChromCognito: Opening ${urls.length} URLs in individual incognito tabs`,
-  );
-
   // Filter out URLs that can't be opened in incognito mode
   const validUrls = urls.filter((url) => {
     if (!url) return false;
     if (url.startsWith("chrome://") || url.startsWith("chrome-extension://")) {
-      console.log(`ChromCognito: Skipping Chrome internal URL: ${url}`);
       return false;
     }
     if (url === "about:blank" || url === "chrome://newtab/") {
-      console.log(`ChromCognito: Skipping invalid URL: ${url}`);
       return false;
     }
     return true;
   });
 
-  console.log(
-    `ChromCognito: Filtered to ${validUrls.length} valid URLs:`,
-    validUrls,
-  );
-
   if (validUrls.length === 0) {
-    console.error(`ChromCognito: No valid URLs to open in incognito mode`);
     return null;
   }
 
   try {
-    console.log(
-      `ChromCognito: Using NEW approach - creating individual incognito windows for each tab`,
-    );
-
     const createdWindows: chrome.windows.Window[] = [];
     const createdTabs: chrome.tabs.Tab[] = [];
 
@@ -170,12 +156,6 @@ async function openMultipleUrlsInIncognito(
     for (let i = 0; i < validUrls.length; i++) {
       const url = validUrls[i];
       try {
-        console.log(
-          `ChromCognito: Creating incognito window ${i + 1}/${
-            validUrls.length
-          } with URL: ${url}`,
-        );
-
         // Create a new incognito window for each URL
         const newWindow = await chrome.windows.create({
           incognito: true,
@@ -187,13 +167,6 @@ async function openMultipleUrlsInIncognito(
           const newTab = newWindow.tabs[0];
           createdWindows.push(newWindow);
           createdTabs.push(newTab);
-          console.log(
-            `ChromCognito: Successfully created incognito window ${newWindow.id} with tab ${newTab.id}`,
-          );
-        } else {
-          console.error(
-            `ChromCognito: Failed to create incognito window for ${url}`,
-          );
         }
 
         if (removeHistory) {
@@ -201,12 +174,8 @@ async function openMultipleUrlsInIncognito(
           setTimeout(async () => {
             try {
               await removeFromHistory(url);
-              console.log(`ChromCognito: Removed from history: ${url}`);
-            } catch (error) {
-              console.error(
-                `ChromCognito: Failed to remove from history: ${url}`,
-                error,
-              );
+            } catch {
+              // Silent error handling
             }
           }, 1000);
         }
@@ -215,17 +184,10 @@ async function openMultipleUrlsInIncognito(
         if (i < validUrls.length - 1) {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
-      } catch (error) {
-        console.error(
-          `ChromCognito: Failed to create incognito window for ${url}:`,
-          error,
-        );
+      } catch {
+        // Silent error handling
       }
     }
-
-    console.log(
-      `ChromCognito: Successfully created ${createdWindows.length} incognito windows`,
-    );
 
     // Return a mock window object for compatibility (using the first window as reference)
     if (createdWindows.length > 0) {
@@ -235,151 +197,13 @@ async function openMultipleUrlsInIncognito(
         incognito: true,
         tabs: createdTabs,
       };
-      console.log(`ChromCognito: Returning mock window object:`, mockWindow);
       return mockWindow;
     } else {
-      console.log(`ChromCognito: No windows created, returning null`);
       return null;
     }
-  } catch (error) {
-    console.error(
-      `ChromCognito: Failed to open multiple URLs in incognito:`,
-      error,
-    );
+  } catch {
     return null;
   }
-}
-
-// Batch processing for auto-rules to group matching tabs together
-let pendingRuleMatches: Array<{ tabId: number; tab: chrome.tabs.Tab }> = [];
-let ruleMatchTimeout: NodeJS.Timeout | null = null;
-
-async function processBatchRuleMatches() {
-  if (pendingRuleMatches.length === 0) return;
-
-  const settings = await getSettings();
-  if (!settings.autoIncognitoEnabled) {
-    pendingRuleMatches = [];
-    return;
-  }
-
-  // Filter to only include tabs that still match rules (in case they were changed)
-  const validMatches = pendingRuleMatches.filter(
-    ({ tab }) =>
-      tab.url &&
-      !tab.incognito &&
-      anyRuleMatches(tab.url, settings.autoIncognitoRules),
-  );
-
-  if (validMatches.length === 0) {
-    pendingRuleMatches = [];
-    return;
-  }
-
-  console.log(
-    `ChromCognito: Processing batch of ${validMatches.length} rule-matching tabs`,
-  );
-
-  // Use the existing transferTabs logic to open all in the same incognito window
-  const tabIds = validMatches.map(({ tabId }) => tabId);
-
-  // Get the actual tab objects
-  const tabs = await Promise.all(tabIds.map((id) => chrome.tabs.get(id)));
-
-  // Filter out any tabs that might have been closed or changed
-  const validTabs = tabs.filter((t) => t.url && !t.incognito);
-
-  if (validTabs.length === 0) {
-    pendingRuleMatches = [];
-    return;
-  }
-
-  // Create a single incognito window with the first tab
-  const firstTab = validTabs[0];
-  const win = await openUrlInIncognito(
-    firstTab.url!,
-    settings.removeFromHistoryOnTransfer,
-  );
-  if (!win || typeof win.id === "undefined") {
-    pendingRuleMatches = [];
-    return;
-  }
-
-  const incogWindowId = win.id;
-
-  // Add remaining tabs to the same incognito window
-  for (let i = 1; i < validTabs.length; i++) {
-    const tab = validTabs[i];
-    try {
-      await chrome.tabs.create({
-        windowId: incogWindowId,
-        url: tab.url,
-      });
-      if (settings.removeFromHistoryOnTransfer) {
-        // Add a small delay to ensure the history entry is created first
-        setTimeout(async () => {
-          await removeFromHistory(tab.url!);
-        }, 1000);
-      }
-    } catch (error) {
-      console.error(
-        `ChromCognito: Failed to add tab ${tab.url} to incognito window:`,
-        error,
-      );
-    }
-  }
-
-  // Close all original tabs
-  try {
-    await chrome.tabs.remove(tabIds);
-  } catch (error) {
-    console.error("ChromCognito: Failed to remove original tabs:", error);
-  }
-
-  // Clear the batch
-  pendingRuleMatches = [];
-}
-
-function scheduleBatchRuleMatches(tabId: number, tab: chrome.tabs.Tab) {
-  console.log(
-    `ChromCognito: Scheduling batch for tab ${tabId} with URL: ${tab.url}`,
-  );
-
-  // Check if this tab matches any rules
-  getSettings().then((settings) => {
-    const matches = anyRuleMatches(tab.url!, settings.autoIncognitoRules);
-    console.log(`ChromCognito: Tab ${tabId} matches rules: ${matches}`);
-    if (matches) {
-      console.log(
-        `ChromCognito: Rules that match:`,
-        settings.autoIncognitoRules.filter((rule) =>
-          anyRuleMatches(tab.url!, [rule]),
-        ),
-      );
-    }
-  });
-
-  // Add to pending batch
-  pendingRuleMatches.push({ tabId, tab });
-
-  console.log(`ChromCognito: Current batch size: ${pendingRuleMatches.length}`);
-  console.log(
-    `ChromCognito: Current batch tabs:`,
-    pendingRuleMatches.map(({ tabId, tab }) => ({ tabId, url: tab.url })),
-  );
-
-  // Clear existing timeout
-  if (ruleMatchTimeout) {
-    clearTimeout(ruleMatchTimeout);
-  }
-
-  // Schedule processing after a short delay to group multiple tabs
-  ruleMatchTimeout = setTimeout(() => {
-    console.log(
-      `ChromCognito: Processing batch timeout triggered with ${pendingRuleMatches.length} tabs`,
-    );
-    processBatchRuleMatches();
-  }, 500); // Increased delay to 500ms to better group tabs opened around the same time
 }
 
 // Context Menus
@@ -448,22 +272,29 @@ const tabUrls: Record<number, { url: string; incognito: boolean }> = {};
 chrome.tabs.onCreated.addListener(async (tab) => {
   if (tab.url) {
     tabUrls[tab.id!] = { url: tab.url, incognito: tab.incognito };
-    console.log(`Tab created: ${tab.id}, incognito: ${tab.incognito}, url: ${tab.url}`);
   }
-
-
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.url) {
     tabUrls[tabId] = { url: changeInfo.url, incognito: tab.incognito };
-    console.log(`Tab updated: ${tabId}, incognito: ${tab.incognito}, url: ${changeInfo.url}`);
   }
   trackActivity(tabId);
 
-  // Use batching for auto-rules instead of immediate processing
+  // Check if this tab should be automatically moved to incognito
   if (changeInfo.url && tab.url && !tab.incognito) {
-    scheduleBatchRuleMatches(tabId, tab);
+    const settings = await getSettings();
+    if (
+      settings.autoIncognitoEnabled &&
+      anyRuleMatches(tab.url, settings.autoIncognitoRules)
+    ) {
+      // Immediately redirect to incognito instead of batching
+      await redirectTabToIncognito(
+        tabId,
+        tab.url,
+        settings.removeFromHistoryOnTransfer,
+      );
+    }
   }
 });
 
@@ -480,32 +311,30 @@ chrome.tabs.query({}, (tabs) => {
   for (const tab of tabs) {
     if (tab.id && tab.url) {
       tabUrls[tab.id] = { url: tab.url, incognito: tab.incognito };
-      console.log(`Initial tab: ${tab.id}, incognito: ${tab.incognito}, url: ${tab.url}`);
     }
   }
 });
 
 // Handle window closing to capture all tabs in the window
-chrome.windows.onRemoved.addListener(async (windowId) => {
-  console.log(`Window closed: ${windowId}`);
-
+chrome.windows.onRemoved.addListener(async () => {
   // Immediately query for all tabs to see if any were in this window
   try {
     const allTabs = await chrome.tabs.query({});
-    console.log(`Total tabs after window close: ${allTabs.length}`);
 
     // Check if any tabs we were tracking are now missing (indicating they were in the closed window)
     const trackedTabIds = Object.keys(tabUrls).map(Number);
-    const currentTabIds = allTabs.map((tab) => tab.id).filter((id) => id !== undefined) as number[];
+    const currentTabIds = allTabs
+      .map((tab) => tab.id)
+      .filter((id) => id !== undefined) as number[];
 
-    const missingTabIds = trackedTabIds.filter((id) => !currentTabIds.includes(id));
-    console.log(`Missing tab IDs: ${missingTabIds.join(", ")}`);
+    const missingTabIds = trackedTabIds.filter(
+      (id) => !currentTabIds.includes(id),
+    );
 
     // Save any missing incognito tabs
     for (const tabId of missingTabIds) {
       const tabInfo = tabUrls[tabId];
       if (tabInfo && tabInfo.incognito) {
-        console.log(`Saving missing incognito tab: ${tabId}, url: ${tabInfo.url}`);
         await pushClosed({
           url: tabInfo.url,
           title: "",
@@ -516,18 +345,17 @@ chrome.windows.onRemoved.addListener(async (windowId) => {
       // Clean up the tracking
       delete tabUrls[tabId];
     }
-  } catch (error) {
-    console.log(`Error handling window close: ${error}`);
+  } catch {
+    // Silent error handling
   }
 });
 
 // Keep recently closed
-chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+chrome.tabs.onRemoved.addListener(async (tabId) => {
   clearTab(tabId);
 
   const tabInfo = tabUrls[tabId];
   if (tabInfo) {
-    console.log(`Tab closed: ${tabId}, incognito: ${tabInfo.incognito}, url: ${tabInfo.url}, isWindowClosing: ${removeInfo?.isWindowClosing}`);
     const title = ""; // We could store titles similarly
     await pushClosed({
       url: tabInfo.url,
@@ -536,12 +364,8 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
       incognito: tabInfo.incognito,
     });
     delete tabUrls[tabId];
-  } else {
-    console.log(`Tab closed but no info found: ${tabId}, isWindowClosing: ${removeInfo?.isWindowClosing}`);
   }
 });
-
-
 
 // Messages (from popup/options/content)
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {

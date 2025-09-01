@@ -1,5 +1,4 @@
 // Configurable modifier click detection for opening links in incognito
-console.log("ChromCognito: Content script loaded");
 
 // Add a visual indicator that the script is loaded (for debugging)
 declare global {
@@ -10,7 +9,6 @@ declare global {
 
 if (typeof window !== "undefined") {
   window.chromCognitoLoaded = true;
-  console.log("ChromCognito: Window object available, script fully loaded");
 }
 
 let modifierSettings = {
@@ -26,7 +24,6 @@ if (typeof chrome !== "undefined" && chrome.storage) {
         ...modifierSettings,
         ...result.settings.modifierClick,
       };
-      console.log("ChromCognito: Settings loaded", modifierSettings);
     }
   });
 
@@ -37,13 +34,10 @@ if (typeof chrome !== "undefined" && chrome.storage) {
         ...modifierSettings,
         ...changes.settings.newValue.modifierClick,
       };
-      console.log("ChromCognito: Settings updated", modifierSettings);
     }
   });
 } else {
-  console.warn(
-    "ChromCognito: chrome.storage not available, using default settings",
-  );
+  // Using default settings
 }
 
 function checkModifiers(evt: MouseEvent): boolean {
@@ -54,15 +48,6 @@ function checkModifiers(evt: MouseEvent): boolean {
 }
 
 function handleLinkClick(evt: MouseEvent, eventType: string) {
-  console.log(`ChromCognito: ${eventType} detected`, {
-    button: evt.button,
-    altKey: evt.altKey,
-    shiftKey: evt.shiftKey,
-    metaKey: evt.metaKey,
-    ctrlKey: evt.ctrlKey,
-    enabled: modifierSettings.enabled,
-  });
-
   // Only care about left-clicks
   if (evt.button !== 0) return;
 
@@ -70,9 +55,6 @@ function handleLinkClick(evt: MouseEvent, eventType: string) {
 
   // If modifier click is disabled, don't interfere with normal link behavior
   if (!modifierSettings.enabled) {
-    console.log(
-      "ChromCognito: Modifier click detected but feature is disabled",
-    );
     return;
   }
 
@@ -86,11 +68,6 @@ function handleLinkClick(evt: MouseEvent, eventType: string) {
   // Must have an href we can read
   const href = (anchor as HTMLAnchorElement).href;
   if (!href) return;
-
-  console.log(
-    "ChromCognito: Modifier combination detected! Opening in incognito:",
-    href,
-  );
 
   // Aggressively stop all default behaviors
   evt.preventDefault();
@@ -109,25 +86,14 @@ function handleLinkClick(evt: MouseEvent, eventType: string) {
 
   // Send message to background script
   try {
-    chrome.runtime.sendMessage({ type: "OPEN_INCOGNITO", url: href }, () => {
-      if (chrome.runtime.lastError) {
-        console.error(
-          "ChromCognito: Error sending message:",
-          chrome.runtime.lastError,
-        );
-      } else {
-        console.log("ChromCognito: Message sent successfully");
-      }
-    });
-  } catch (error) {
-    console.error("ChromCognito: Failed to send message:", error);
+    chrome.runtime.sendMessage({ type: "OPEN_INCOGNITO", url: href });
+  } catch {
+    // Silent error handling
   }
 }
 
 // Function to set up event listeners
 function setupEventListeners() {
-  console.log("ChromCognito: Setting up event listeners");
-
   // Listen to mousedown first (fires before click and page handlers)
   document.addEventListener(
     "mousedown",
@@ -162,8 +128,6 @@ function setupEventListeners() {
     },
     { capture: true },
   );
-
-  console.log("ChromCognito: Event listeners set up successfully");
 }
 
 // Set up listeners immediately since we're running at document_start
@@ -174,5 +138,4 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", setupEventListeners);
 } else {
   // DOM is already ready
-  console.log("ChromCognito: DOM already ready");
 }
