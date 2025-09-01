@@ -1,4 +1,4 @@
-# Pulse Play
+# Chromcognito
 
 A Chrome extension for instant video playback speed control with customizable hotkeys and visual feedback.
 
@@ -62,7 +62,7 @@ src/
 
 ## Privacy
 
-Pulse Play respects your privacy:
+Chromcognito respects your privacy:
 
 - **No data collection**: We don't collect any personal information
 - **Local storage only**: All preferences are stored locally in your browser

@@ -1,14 +1,14 @@
-# Privacy Policy for Pulse Play
+# Privacy Policy for Chromcognito
 
 **Last updated: January 9, 2025**
 
 ## Overview
 
-Pulse Play is a Chrome extension designed to provide instant video playback speed control. This privacy policy explains how we handle data in our extension.
+Chromcognito is a Chrome extension designed to provide instant video playback speed control. This privacy policy explains how we handle data in our extension.
 
 ## Data Collection
 
-**We do not collect any user data.** Pulse Play operates entirely locally on your device and does not:
+**We do not collect any user data.** Chromcognito operates entirely locally on your device and does not:
 
 - Collect personally identifiable information
 - Track your browsing history
@@ -56,7 +56,7 @@ We may update this privacy policy from time to time. Any changes will be posted 
 
 ## Contact
 
-If you have questions about this privacy policy, please contact us through our GitHub repository: https://github.com/gdcho/pulse-play
+If you have questions about this privacy policy, please contact us through our GitHub repository: https://github.com/gdcho/chromcognito
 
 ## Compliance
 

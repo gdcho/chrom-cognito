@@ -4,7 +4,7 @@
 
 **Character count: 604/1000**
 
-Pulse Play is a single-purpose Chrome extension designed to provide instant video playback speed control. The extension allows users to temporarily speed up video content on any website by holding down a customizable hotkey, with visual feedback showing the current speed. When the hotkey is released, the video returns to normal playback speed. This single purpose is narrow and focused solely on enhancing video viewing experience through temporary speed control, making it easy for users to save time while watching educational content, tutorials, or any video that benefits from accelerated playback.
+Chromcognito is a single-purpose Chrome extension designed to provide instant video playback speed control. The extension allows users to temporarily speed up video content on any website by holding down a customizable hotkey, with visual feedback showing the current speed. When the hotkey is released, the video returns to normal playback speed. This single purpose is narrow and focused solely on enhancing video viewing experience through temporary speed control, making it easy for users to save time while watching educational content, tutorials, or any video that benefits from accelerated playback.
 
 ## Permission Justifications
 
@@ -24,7 +24,7 @@ The `storage` permission is essential for saving and retrieving user preferences
 
 **Character count: 498/1000**
 
-The host permissions (`https://*/*` and `http://*/*`) are necessary for the extension to detect and control video players across various websites. These permissions allow Pulse Play to work on different video platforms including YouTube, Netflix, Vimeo, educational platforms, and any website with HTML5 video content. The extension only accesses video elements and does not collect, read, or transmit any website content or user data beyond what's necessary for video speed control functionality.
+The host permissions (`https://*/*` and `http://*/*`) are necessary for the extension to detect and control video players across various websites. These permissions allow Chromcognito to work on different video platforms including YouTube, Netflix, Vimeo, educational platforms, and any website with HTML5 video content. The extension only accesses video elements and does not collect, read, or transmit any website content or user data beyond what's necessary for video speed control functionality.
 
 ## Remote Code Usage
 
@@ -56,7 +56,7 @@ The extension does not collect any of the following:
 
 ## Privacy Policy URL
 
-https://github.com/gdcho/pulse-play/blob/main/privacy.md
+https://github.com/gdcho/chromcognito/blob/main/privacy.md
 
 ## Key Points for Review
 
